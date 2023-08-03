@@ -20,4 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 require __DIR__.'./api/banner.php';
 
+require __DIR__.'./api/product.php';
+
 
