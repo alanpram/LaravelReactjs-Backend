@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\BannerRepository;
 use Illuminate\Http\Request;
 
-class ContentPromoController extends Controller
+class SpecialOfferController extends Controller
 {
     private $bannerRepo;
 
@@ -17,7 +17,7 @@ class ContentPromoController extends Controller
     }
     public function index(){
 
-        $banner = $this->bannerRepo->getAllBanner('banner/content-promo');
+        $banner = $this->bannerRepo->getBanner('banner/special-offer');
 
         return Response::res('content promo',200,$banner);
     }

@@ -17,7 +17,7 @@ class BannerController extends Controller
     }
     public function index(){
 
-        $banner = $this->bannerRepo->getBanner('banner');
+        $banner = $this->bannerRepo->getAllBanner('banner');
 
         return Response::res('data banner',200,$banner);
     }

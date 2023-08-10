@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 
-class ProductTopController extends Controller
+class ProductNewController extends Controller
 {
     private $productRepo;
 
@@ -17,9 +17,9 @@ class ProductTopController extends Controller
     }
 
     public function index(){
-        
-        $product = $this->productRepo->plugin_GetByModel('Product/Top');
 
-        return Response::res('top product',200,$product);
+        $product = $this->productRepo->plugin_GetByModel('Product/New');
+
+        return Response::res('New Product',200,$product);
     }
 }

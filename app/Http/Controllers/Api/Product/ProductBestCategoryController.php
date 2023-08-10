@@ -4,21 +4,21 @@ namespace App\Http\Controllers\Api\Product;
 
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
-use App\Repositories\ProductRepository;
+use App\Repositories\ProductCategoryRepository;
 use Illuminate\Http\Request;
 
-class ProductTopController extends Controller
+class ProductBestCategoryController extends Controller
 {
-    private $productRepo;
+    private $productCategoryRepo;
 
     public function __construct()
     {
-        $this->productRepo = new ProductRepository();
+        $this->productCategoryRepo = new ProductCategoryRepository();
     }
 
     public function index(){
-        
-        $product = $this->productRepo->plugin_GetByModel('Product/Top');
+
+        $product = $this->productCategoryRepo->getBestCategory();
 
         return Response::res('top product',200,$product);
     }
