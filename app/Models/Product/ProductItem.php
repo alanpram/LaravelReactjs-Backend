@@ -11,6 +11,9 @@ class ProductItem extends Model
     use HasFactory;
     protected $table = 'product_item';
 
+    protected $primaryKey = 'item_id';
+    protected $hidden = ['item_id'];
+
     public function linkImage(){
         return $this->hasMany(Media::class, 'media_model_id','item_uuid')->where('media_model', 'Product/Item');
     }

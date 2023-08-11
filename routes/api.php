@@ -22,4 +22,6 @@ require __DIR__.'./api/banner.php';
 
 require __DIR__.'./api/product.php';
 
+require __DIR__.'./api/article.php';
+
 
