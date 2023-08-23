@@ -55,4 +55,23 @@ class ProductRepository{
         return $item;
     }
 
+    public function getProductDetail($slug){
+        
+        $product = ProductItem::where('item_slug',$slug)
+        ->with(['linkFrame.linkDimension','linkImage','linkPrice','linkFabric.linkImage'])
+        ->first();
+
+        return $product;
+    }
+
+    public function getAlternativePhoto($framecode){
+        
+        $product = ProductItem::where('item_flagships',1)->whereHas('linkFrame',function($q) use($framecode){
+            $q->where('frame_code',$framecode);
+        })
+        ->with('linkImage')
+        ->first();
+
+        return $product;
+    }
 }

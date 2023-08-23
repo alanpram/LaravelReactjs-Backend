@@ -37,5 +37,30 @@ class ProductController extends Controller
         return Response::res($message,200,$data);
     }
 
+    public function show($slug){
+
+        $data = $this->ProductRepo->getProductDetail($slug);
+
+        $category = $data->linkFrame->linkProductCollection->collection_name;
+
+        if($data->linkImage->isNotEmpty()){
+
+            $alternative_img = 'null';
+
+        }else{
+
+            $alternative_img = $this->ProductRepo->GetAlternativePhoto($data->linkFrame->frame_code);
+
+        }
+
+        $data = [
+                'data' => $data,
+                'alternative_image' => $alternative_img,
+                'category' => $category,
+            ];
+            
+            return Response::res('product detail with alternative image',200,$data);
+
     
+    }
 }
