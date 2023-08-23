@@ -12,4 +12,11 @@ class ProductCategoryRepository{
 
         return $category;
     }
+
+    public function getCategoryBySlug($slug){
+
+        $category = ProductCategory::where('category_status',1)->where('category_slug',$slug)->first();
+
+        return $category;
+    }
 }

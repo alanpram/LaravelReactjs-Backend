@@ -29,4 +29,30 @@ class ProductRepository{
 
         return $item;
     }
+
+    public function getProductByCategory($category){
+
+        $product = ProductFrame::where('frame_status',1)->where('frame_flagship',1)
+        ->whereHas('linkProductCategory',function($q) use($category){
+            $q->where('category_slug',$category);
+        })
+        ->join('product_collection','product_frame.frame_collection','=','product_collection.collection_uuid')
+        ->with(['linkProductCategory','linkProductCollection','linkProductItem.linkImage','linkProductItem.linkPrice'])
+        ->orderBy('collection_name')
+        ->get();
+
+        foreach ($product as $key => $value) {
+
+            $group = $value->frame_code;
+            
+            $item[$group] = [
+                'flagship' => $value->linkProductItem->where('item_flagships',true)->sortByDesc('product_price')->first(),
+                'price' => $value->linkProductItem->sortBy('product_price')->first(),
+            ];
+        }
+
+        
+        return $item;
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Product;
 
+use App\Models\Fabric\FabricItem;
 use App\Models\Plugin\Media;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,5 +21,14 @@ class ProductItem extends Model
 
     public function linkPrice(){
         return $this->hasOne(ProductPrice::class, 'product_item','item_uuid');
+    }
+
+    public function linkFrame()
+    {
+        return $this->belongsTo(ProductFrame::class, 'item_frame', 'frame_uuid');
+    }
+
+    public function linkFabric(){
+        return $this->hasOne(FabricItem::class,'item_uuid','item_fabric');
     }
 }

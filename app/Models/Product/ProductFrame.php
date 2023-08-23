@@ -16,4 +16,16 @@ class ProductFrame extends Model
     public function linkProductItem(){
         return $this->hasMany(ProductItem::class,'item_frame','frame_uuid');
     }
+
+    public function linkProductCategory(){
+        return $this->hasOne(ProductCategory::class,'category_uuid','frame_category');
+    }
+
+    public function linkProductCollection(){
+        return $this->hasOne(ProductCollection::class,'collection_uuid','frame_collection');
+    }
+
+    public function linkDimension(){
+        return $this->hasOne(ProductDimension::class,'dimension_uuid','frame_dimension');
+    }
 }
