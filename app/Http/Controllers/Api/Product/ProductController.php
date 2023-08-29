@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\Product;
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
 use App\Models\Product\ProductCategory;
+use App\Models\Product\ProductFrame;
 use App\Repositories\ProductCategoryRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
+use Throwable;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -62,5 +64,20 @@ class ProductController extends Controller
             return Response::res('product detail with alternative image',200,$data);
 
     
+    }
+
+    public function filter(Request $request){
+
+        $filters = $request->input('filters');
+
+        $category = $request->input('category');
+
+        $seaters = array_diff($filters, ['Rectangle', 'Round']);
+
+        $shapes = array_intersect($filters, ['Rectangle', 'Round']);
+
+        $data = $this->ProductRepo->filter($seaters,$shapes,$category);
+        
+        return Response::res('product filter',200,$data);
     }
 }

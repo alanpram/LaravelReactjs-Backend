@@ -28,4 +28,10 @@ class ProductFrame extends Model
     public function linkDimension(){
         return $this->hasOne(ProductDimension::class,'dimension_uuid','frame_dimension');
     }
+
+    public function linkShape(){
+        return $this->hasOne(ProductShape::class,'shape_uuid','frame_shape');
+    }
+
+
 }
