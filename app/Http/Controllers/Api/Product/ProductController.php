@@ -43,6 +43,10 @@ class ProductController extends Controller
 
         $data = $this->ProductRepo->getProductDetail($slug);
 
+        $variant = $this->ProductRepo->getProductVariantByframe($data->linkFrame->frame_uuid);
+
+        $collection = $this->ProductRepo->getProductWithSameCollection($data->linkFrame->frame_collection, $data->linkFrame->frame_uuid);
+        
         $category = $data->linkFrame->linkProductCollection->collection_name;
 
         if($data->linkImage->isNotEmpty()){
@@ -57,13 +61,25 @@ class ProductController extends Controller
 
         $data = [
                 'data' => $data,
+                'variant' => $variant,
+                'collection' => $collection,
                 'alternative_image' => $alternative_img,
+                'frame_image' => $data->linkFrame->linkImage ? $data->linkFrame->linkImage->media_path.'/'.$data->linkFrame->linkImage->media_file : '',
                 'category' => $category,
             ];
             
             return Response::res('product detail with alternative image',200,$data);
 
     
+    }
+
+    public function variant($slug){
+       
+        $product = $this->ProductRepo->getProductDetail($slug);
+        
+        $data = $this->ProductRepo->getAllProductVariantByframe($product->linkFrame->frame_uuid);
+
+         return Response::res('product variant',200,$data);
     }
 
     public function filter(Request $request){

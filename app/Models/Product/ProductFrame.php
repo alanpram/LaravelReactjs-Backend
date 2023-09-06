@@ -2,6 +2,7 @@
 
 namespace App\Models\Product;
 
+use App\Models\Plugin\Media;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,6 +32,10 @@ class ProductFrame extends Model
 
     public function linkShape(){
         return $this->hasOne(ProductShape::class,'shape_uuid','frame_shape');
+    }
+
+    public function linkImage(){
+        return $this->hasOne(Media::class, 'media_model_id','frame_uuid')->where('media_model', 'Frame');
     }
 
 

@@ -17,4 +17,8 @@ class FabricItem extends Model
     public function linkImage(){
         return $this->hasOne(Media::class, 'media_model_id','item_uuid')->where('media_model', 'Fabric/Item');
     }
+
+    public function linkFabricCategory(){
+        return $this->hasOne(FabricCategory::class,'category_uuid','item_category');
+    }
 }

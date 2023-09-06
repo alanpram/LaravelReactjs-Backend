@@ -24,4 +24,9 @@ require __DIR__.'./api/product.php';
 
 require __DIR__.'./api/article.php';
 
+require __DIR__.'./api/auth.php';
+
+require __DIR__ .'./api/user/user.php';
+
+
 

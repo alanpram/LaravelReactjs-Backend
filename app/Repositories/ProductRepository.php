@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Fabric\FabricCategory;
 use App\Models\Product\ProductFrame;
 use App\Models\Product\ProductItem;
 use App\Models\Product\ProductPlugin;
@@ -15,6 +16,8 @@ class ProductRepository{
         ->with('linkFrame.linkProductItem.linkImage')
         ->with('linkFrame.linkProductItem.linkPrice')
         ->get();
+
+        $item = [];
  
         foreach ($product as $key => $value) {
 
@@ -33,13 +36,15 @@ class ProductRepository{
     public function getProductByCategory($category){
 
         $product = ProductFrame::where('frame_status',1)->where('frame_flagship',1)
+        ->with(['linkProductCategory','linkProductCollection','linkProductItem.linkImage','linkProductItem.linkPrice'])
         ->whereHas('linkProductCategory',function($q) use($category){
             $q->where('category_slug',$category);
         })
         ->join('product_collection','product_frame.frame_collection','=','product_collection.collection_uuid')
-        ->with(['linkProductCategory','linkProductCollection','linkProductItem.linkImage','linkProductItem.linkPrice'])
         ->orderBy('collection_name')
         ->get();
+
+        $item = [];
 
         foreach ($product as $key => $value) {
 
@@ -54,6 +59,50 @@ class ProductRepository{
             ];
         }
 
+        return $item;
+    }
+
+    public function getAllProductVariantByFrame($frame){
+
+        $product = ProductItem::where('item_frame', $frame)
+            ->where('item_status', 1)
+            ->whereHas('linkFabric', function ($q) {
+                $q->where('item_status', 1);
+            })
+            ->with(['linkImage', 'linkPrice', 'linkFabric.linkImage','linkFabric.linkFabricCategory'])
+            ->get();
+
+        $item = [];
+
+        
+        foreach ($product as $value) {
+            $fabricCategory = $value->linkFabric->linkFabricCategory->category_name;
+
+            $item[$fabricCategory][] = $value;
+        }
+        
+        return $item;
+    }
+
+    public function getProductVariantByFrame($frame){
+
+        $product = ProductItem::where('item_frame', $frame)
+            ->where('item_status', 1)
+            ->whereHas('linkFabric', function ($q) {
+                $q->where('item_status', 1);
+            })
+            ->with(['linkImage', 'linkPrice', 'linkFabric.linkImage','linkFabric.linkFabricCategory'])
+            ->get();
+
+        $item = [];
+
+        
+        foreach ($product as $value) {
+            $fabricCategory = $value->linkFabric->linkFabricCategory->category_name;
+
+            $item[$fabricCategory] = $value;
+        }
+        
         return $item;
     }
 
@@ -75,6 +124,32 @@ class ProductRepository{
         ->first();
 
         return $product;
+    }
+
+    public function getProductWithSameCollection($collection,$frame){
+
+        $product = ProductFrame::where('frame_status',1)
+        ->where('frame_uuid','!=',$frame)
+        ->where('frame_collection',$collection)
+        ->with(['linkProductCategory','linkProductCollection','linkProductItem.linkImage','linkProductItem.linkPrice'])
+        ->join('product_collection','product_frame.frame_collection','=','product_collection.collection_uuid')
+        ->orderBy('collection_name')
+        ->get();
+        
+        $item = [];
+
+        foreach ($product as $key => $value) {
+
+            $group = $value->frame_code;
+            
+            $item[$group] = [
+                'flagship' => $value->linkProductItem->where('item_flagships',true)->sortByDesc('product_price')->first(),
+                'price' => $value->linkProductItem->sortBy('product_price')->first()
+            ];
+        }
+
+        return $item;
+
     }
 
     public function filter($seaters, $shapes, $category){
@@ -107,24 +182,22 @@ class ProductRepository{
 
         $frame = $frame->get();
 
-        if($frame->count() > 0){
-            foreach ($frame as $key => $value) {
+        $item = [];
 
-                $group = $value->frame_code;
-                
-                $item[$group] = [
-                    'flagship' => $value->linkProductItem->where('item_flagships',true)->sortByDesc('product_price')->first(),
-                    'price' => $value->linkProductItem->sortBy('product_price')->first(),
-                    'length' => $value->frame_length ? $value->frame_length : 0,
-                    'height' => $value->frame_height ? $value->frame_height : 0 ,
-                    'diameter' => $value->frame_diameter ?  $value->frame_diameter : 0
-                ];
-            }
-        
-            return $item;
+        foreach ($frame as $key => $value) {
+
+            $group = $value->frame_code;
+            
+            $item[$group] = [
+                'flagship' => $value->linkProductItem->where('item_flagships',true)->sortByDesc('product_price')->first(),
+                'price' => $value->linkProductItem->sortBy('product_price')->first(),
+                'length' => $value->frame_length ? $value->frame_length : 0,
+                'height' => $value->frame_height ? $value->frame_height : 0 ,
+                'diameter' => $value->frame_diameter ?  $value->frame_diameter : 0
+            ];
         }
-
-        return '';
+    
+        return $item;
 
     }
 }
